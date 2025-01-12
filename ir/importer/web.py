@@ -18,7 +18,7 @@ class Webpage:
 
 
 class Web:
-    def __init__(self, settings: SettingsManager):
+    def __init__(self, settings: SettingsManager) -> None:
         self._settings = settings
         self._htmlCleaner = HtmlCleaner()
 
@@ -40,7 +40,8 @@ class Web:
         except HTTPError as error:
             raise ImporterError(
                 ErrorLevel.WARNING,
-                f"The remote server has returned an error: HTTP Error {error.code} ({error.reason})",
+                "The remote server has returned an error:"
+                f"HTTP Error {error.code} ({error.reason})",
             ) from error
         except ConnectionError as error:
             raise ImporterError(
@@ -49,7 +50,7 @@ class Web:
 
         return html
 
-    def _constructResponse(self, url: str, webpage: BeautifulSoup):
+    def _constructResponse(self, url: str, webpage: BeautifulSoup) -> Webpage:
         try:
             body = "\n".join(map(str, webpage.find("body").children))
             title = webpage.title.string if webpage.title else url

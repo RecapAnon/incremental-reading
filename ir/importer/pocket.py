@@ -13,7 +13,7 @@
 # PERFORMANCE OF THIS SOFTWARE.
 
 from json.decoder import JSONDecodeError
-from typing import List
+from typing import Dict, List, Optional
 from urllib.parse import urlencode
 
 from anki.utils import is_mac, is_win
@@ -24,18 +24,19 @@ from ..util import Article
 
 
 class Pocket:
-    _accessToken = None
-    _redirectURI = "https://github.com/luoliyan/incremental-reading"
-    _headers = {"X-Accept": "application/json"}
+    _accessToken: Optional[str] = None
+    _redirectURI: str = "https://github.com/luoliyan/incremental-reading"
+    _headers: Dict[str, str] = {"X-Accept": "application/json"}
 
     if is_win:
-        consumerKey = "71462-da4f02100e7e381cbc4a86df"
+        consumerKey: str = "71462-da4f02100e7e381cbc4a86df"
     elif is_mac:
-        consumerKey = "71462-ed224e5a561a545814023bf9"
+        consumerKey: str = "71462-ed224e5a561a545814023bf9"
     else:
-        consumerKey = "71462-05fb63bf0314903c7e73c52f"
+        consumerKey: str = "71462-05fb63bf0314903c7e73c52f"
 
     def getArticles(self) -> List[Article]:
+        """Get unread articles from Pocket"""
         if not self._accessToken:
             self._accessToken = self._authenticate()
 
@@ -54,6 +55,7 @@ class Pocket:
                 "sort": "newest",
             },
             headers=self._headers,
+            timeout=5,
         )
 
         if response.json()["list"]:
@@ -73,6 +75,7 @@ class Pocket:
                 "redirect_uri": self._redirectURI,
             },
             headers=self._headers,
+            timeout=5,
         )
 
         requestToken = response.json()["code"]
@@ -91,6 +94,7 @@ class Pocket:
             "https://getpocket.com/v3/oauth/authorize",
             json={"consumer_key": self.consumerKey, "code": requestToken},
             headers=self._headers,
+            timeout=5,
         )
 
         try:
@@ -106,4 +110,5 @@ class Pocket:
                 "access_token": self._accessToken,
                 "actions": [{"action": "archive", "item_id": article.data["item_id"]}],
             },
+            timeout=5,
         )

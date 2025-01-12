@@ -22,7 +22,7 @@ class BaseImporter(ABC):
             articles = self._getArticles()
             selected = self._selectArticles(articles)
             if not selected:
-                return None
+                return
 
             priority = self._getPriority() if self.settings["prioEnabled"] else None
             mw.progress.start(
@@ -40,11 +40,11 @@ class BaseImporter(ABC):
 
             tooltip(f"Added {len(selected)} item(s) to deck: {deckName}")
 
-            return deckName
+            return
 
         except ImporterError as e:
             self._handleError(e)
-            return None
+            return
 
     @abstractmethod
     def _getArticles(self) -> List[Article]:
@@ -84,7 +84,7 @@ class BaseImporter(ABC):
                 showWarning(
                     f'Destination deck "{deck}" no longer exists. Please update your settings.'
                 )
-                return
+                return ""
             deckId = deck["id"]
         else:
             deckId = mw.col.conf["curDeck"]
