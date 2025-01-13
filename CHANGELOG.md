@@ -5,9 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [4.12.1] - 2025-01-13
 
 ### Fixed
+- Fix LinkedIn import issue where some images don't have a src attribute (#56).
+- Major refactoring of the import process (#43).
+- (Try to) fix an issue with epub import on Windows where tempfile returns a relative temp path (#37).
 
 ## [4.12.0] - 2024-12-30
 
