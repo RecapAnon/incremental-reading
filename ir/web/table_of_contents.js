@@ -15,22 +15,19 @@
  */
 
 function createTableOfContents() {
-    addTOCStyles();
+    addTocStyles();
     
     // Use setTimeout to ensure DOM is fully loaded
     setTimeout(() => {
-        const isIrCard = document.querySelector('.card') !== null;
-        
-        if (isIrCard) {
-            const tocItems = parseHeadings();
-            addTocContainerElement(tocItems);
-            makeTocDraggable();
-        }
+        removeTocContainerElement();
+
+        const tocItems = parseHeadings();
+        addTocContainerElement(tocItems);
+        makeTocDraggable();
     }, 500);
 }
 
-// Add CSS styles for TOC
-function addTOCStyles() {
+function addTocStyles() {
     const style = document.createElement('style');
     style.textContent = `
         .ir-toc-container {
@@ -139,6 +136,13 @@ function parseHeadings() {
     });
 
     return tocItems;
+}
+
+function removeTocContainerElement() {
+    const tocContainer = document.getElementById('ir-toc-container');
+    if (tocContainer) {
+        tocContainer.remove();
+    }
 }
 
 function addTocContainerElement(tocItems) {
@@ -263,5 +267,5 @@ function makeTocDraggable() {
     });
 }
 
-// Hook into Anki's onUpdateHook
+// Hook into Anki's onUpdateHook (https://addon-docs.ankiweb.net/reviewer-javascript.html)
 onUpdateHook.push(createTableOfContents);
