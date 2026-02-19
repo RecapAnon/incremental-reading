@@ -96,15 +96,30 @@ class TextManager:
         else:
             did = currentCard.did
 
+        # Get all field names and copy them
+        model = currentNote.note_type()
+        field_names = [field['name'] for field in model['flds']]
+        #field_names = mw.col.models.field_names(currentNote.note_type())
+
+        for field_name in field_names:
+            if field_name != "Text":
+                value = getField(currentNote, field_name)
+                setField(newNote, field_name, value)
+            # setField(
+            #     newNote,
+            #     field_name,
+            #     getField(currentNote, field_name)
+            # )
+
         if settings["isQuickKey"]:
             newNote.tags += settings["tags"]
 
-            if settings["sourceField"]:
-                setField(
-                    newNote,
-                    settings["sourceField"],
-                    getField(currentNote, self._settings["sourceField"]),
-                )
+            # if settings["sourceField"]:
+            #     setField(
+            #         newNote,
+            #         settings["sourceField"],
+            #         getField(currentNote, self._settings["sourceField"]),
+            #     )
 
             if settings["editExtract"]:
                 highlight = self._editExtract(newNote, did, settings)
@@ -113,25 +128,25 @@ class TextManager:
                 newNote.note_type()["did"] = did
                 mw.col.addNote(newNote)
         else:
-            if settings["copyTitle"]:
-                title = getField(currentNote, settings["titleField"])
-            else:
-                title = ""
+            # if settings["copyTitle"]:
+            #     title = getField(currentNote, settings["titleField"])
+            # else:
+            #     title = ""
 
-            setField(
-                newNote,
-                settings["sourceField"],
-                getField(currentNote, settings["sourceField"]),
-            )
-            if settings["prioEnabled"]:
-                setField(
-                    newNote,
-                    settings["prioField"],
-                    getField(currentNote, settings["prioField"]),
-                )
+            # setField(
+            #     newNote,
+            #     settings["sourceField"],
+            #     getField(currentNote, settings["sourceField"]),
+            # )
+            # if settings["prioEnabled"]:
+            #     setField(
+            #         newNote,
+            #         settings["prioField"],
+            #         getField(currentNote, settings["prioField"]),
+            #     )
 
             if settings["editExtract"]:
-                setField(newNote, settings["titleField"], title)
+                # setField(newNote, settings["titleField"], title)
                 highlight = self._editExtract(newNote, did, settings)
             else:
                 highlight = self._getTitle(newNote, did, title, settings)
