@@ -16,17 +16,22 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 
-from typing import Any, Sequence
+import json
+from typing import Any, List, Sequence
+from urllib.parse import urlsplit
 
 from anki.cards import Card
 from anki.hooks import addHook, wrap
 from aqt import gui_hooks, mw
 from aqt.browser import Browser
+from aqt.editor import Editor
 from aqt.qt import sip
 from aqt.reviewer import Reviewer
+from aqt.utils import getText, showWarning
 
 from .about import showAbout
 from .gui import SettingsDialog
+from .importer.exceptions import ImporterError
 from .importer.importer import Importer
 from .schedule import Scheduler
 from .settings import SettingsManager
@@ -49,6 +54,35 @@ class ReadingManager:
 
         addHook("overviewStateShortcuts", self.setShortcuts)
         addHook("reviewStateShortcuts", self.setReviewShortcuts)
+        gui_hooks.editor_did_init_buttons.append(self.onEditorInitButtons)
+
+    def onEditorInitButtons(self, buttons: List[str], editor: Editor) -> None:
+        button = editor.addButton(
+            icon=None,
+            cmd="ir_import_webpage",
+            func=lambda editor=editor: self.onImportWebpageToEditor(editor),
+            tip="Import Webpage Content",
+            label="IR Import",
+        )
+        buttons.append(button)
+
+    def onImportWebpageToEditor(self, editor: Editor) -> None:
+        url, accepted = getText("Enter URL:", title="Import Webpage")
+        if not url or not accepted:
+            return
+
+        if not urlsplit(url).scheme:
+            url = "http://" + url
+
+        try:
+            webpage = self.importer.download(url, local=True)
+            editor.web.eval(
+                f"document.execCommand('insertHTML', false, {json.dumps(webpage.body)});"
+            )
+        except ImporterError as error:
+            showWarning(error.message)
+        except Exception as error:
+            showWarning(str(error))
 
     def onProfileLoaded(self) -> None:
         self.settings = SettingsManager()

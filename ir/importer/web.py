@@ -22,9 +22,9 @@ class Web:
         self._settings = settings
         self._htmlCleaner = HtmlCleaner()
 
-    def download(self, url: str) -> Webpage:
+    def download(self, url: str, local: bool = False) -> Webpage:
         html = self._fetchWebpage(url)
-        page = self._htmlCleaner.clean(html, url)
+        page = self._htmlCleaner.clean(html, url, local)
         return self._constructResponse(url, page)
 
     def _fetchWebpage(self, url: str) -> bytes:

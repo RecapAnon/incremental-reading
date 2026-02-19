@@ -16,7 +16,7 @@
 from typing import Optional
 
 from .local_file import LocalFile
-from .web import Web
+from .web import Web, Webpage
 
 try:
     from PyQt6.QtCore import Qt
@@ -67,3 +67,6 @@ class Importer:
 
     def importEpub(self):
         self._epubImporter.importContent()
+
+    def download(self, url: str, local: bool = False) -> Webpage:
+        return self._web.download(url, local)
