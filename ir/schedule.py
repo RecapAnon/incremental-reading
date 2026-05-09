@@ -137,8 +137,19 @@ class Scheduler:
                 info = card["priority"]
             else:
                 info = str(i).zfill(posWidth)
-            title = sub(r"\s+", " ", strip_html(card["title"]))
-            text = self._settings["organizerFormat"].format(info=info, title=title)
+
+            note = card["note"]
+            format_kwargs = {
+                field_name: sub(r"\s+", " ", strip_html(field_value))
+                for field_name, field_value in note.items()
+            }
+            format_kwargs["info"] = info
+
+            try:
+                text = self._settings["organizerFormat"].format(**format_kwargs)
+            except KeyError as e:
+                text = f"Format Error: Missing field {e}"
+
             item = QListWidgetItem(text)
             item.setData(Qt.ItemDataRole.UserRole, card)
             self._cardListWidget.addItem(item)
@@ -307,8 +318,8 @@ class Scheduler:
                     {
                         "id": cid,
                         "nid": nid,
-                        "title": note[self._settings["titleField"]],
                         "priority": prio,
+                        "note": note,
                     }
                 )
 

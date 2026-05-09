@@ -212,12 +212,7 @@ class SettingsDialog:
         }
         for name, editBox in d.items():
             fmt = editBox.text().replace(r"\t", "\t")
-            if self.settings.validFormat(name, fmt):
-                self.settings[name] = fmt
-            else:
-                showWarning("Missing required keys for format string.")
-                done = False
-                break
+            self.settings[name] = fmt
 
         self.settings["boldSeq"] = self.boldSeqEditBox.keySequence().toString()
         self.settings["italicSeq"] = self.italicSeqEditBox.keySequence().toString()

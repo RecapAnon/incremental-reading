@@ -30,7 +30,6 @@ from .util import addMenuItem, setMenuVisibility, updateModificationTime
 class SettingsManager:
     updated = False
     requiredFormatKeys = {
-        "organizerFormat": ["info", "title"],
         "sourceFormat": ["url", "date"],
     }
     doNotUpdate = ["feedLog", "modified", "quickKeys", "scroll", "zoom"]
@@ -61,7 +60,7 @@ class SettingsManager:
         "lineScrollFactor": 0.05,
         "modelName": "IR3",
         "modified": [],
-        "organizerFormat": "❰ {info} ❱\t{title}",
+        "organizerFormat": "❰ {info} ❱\t{Title}",
         "overlaySeq": "Ctrl+Shift+O",
         "pageScrollFactor": 0.5,
         "plainText": False,
